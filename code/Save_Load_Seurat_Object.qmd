@@ -1,0 +1,19 @@
+---
+title: "Save Load Seurat Object"
+format: html
+---
+
+# Save Seurat Object
+```{r}
+
+saveRDS(GSE143791_Seurat_Object, file = "data/GSE143791_Seurat_Object.rds")
+
+```
+
+# Load Seurat Object
+```{r}
+
+GSE143791_Seurat_Object = readRDS("data/GSE143791_Seurat_Object.rds")
+
+```
+

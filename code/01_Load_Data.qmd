@@ -1,0 +1,138 @@
+---
+title: "Load Data"
+format: html
+---
+
+# Libraries
+```{r}
+
+library(Seurat)
+library(dplyr)
+
+```
+
+# Read in sample info
+```{r}
+
+Sample_Info = read.csv("../data/Sample_Info.csv")
+
+```
+
+# Create Seurat Objects
+```{r}
+
+#Function for importing data
+Import_Seurat = function(sample) {
+  temp = read.csv(paste0("../data/", sample, ".count.csv"))
+  #there are duplicate row names; need to make unique
+  rownames(temp) = make.names(temp[,1], unique = TRUE)
+  temp = temp[,2:ncol(temp)]
+  temp = Seurat::CreateSeuratObject(temp)
+  temp$Patient_ID = Sample_Info[Sample_Info$Sample_Name == sample, "Patient_ID"]
+  temp$Malignancy = Sample_Info[Sample_Info$Sample_Name == sample, "Malignancy"]
+  temp$Location = Sample_Info[Sample_Info$Sample_Name == sample, "Location"]
+  return(temp)
+}
+
+#Loop over samples to import
+for(sample in Sample_Info$Sample_Name) {
+  assign(paste0(sample, "_Seurat_Object"), Import_Seurat(sample = sample))
+}
+
+#Need to make a version that uses an apply function; can parallelize
+# Import_Seurat2 = function(sample) {
+#   temp = read.csv(paste0("../data/", sample, ".count.csv"))
+#   #there are duplicate row names; need to make unique
+#   rownames(temp) = make.names(temp[,1], unique = TRUE)
+#   temp = temp[,2:ncol(temp)]
+#   temp = Seurat::CreateSeuratObject(temp)
+#   temp$Patient_ID = Sample_Info[Sample_Info$Sample_Name == sample, "Patient_ID"]
+#   temp$Malignancy = Sample_Info[Sample_Info$Sample_Name == sample, "Malignancy"]
+#   temp$Location = Sample_Info[Sample_Info$Sample_Name == sample, "Location"]
+#   return(assign(paste0(sample, "_Seurat_Object"), temp))
+# }
+# 
+# lapply(Sample_Info$Sample_Name, Import_Seurat2)
+
+rm(Import_Seurat)
+rm(sample)
+
+```
+
+# Merge Seurat Objects
+```{r}
+#Merge Seurat Objects
+GSE143791_Seurat_Object = merge(x = `BMET1-Tumor_Seurat_Object`,
+                                y = c(`BMET10-Involved_Seurat_Object`,
+                                      `BMET10-Tumor_Seurat_Object`,
+                                      `BMET11-Distal_Seurat_Object`,
+                                      `BMET11-Involved_Seurat_Object`,
+                                      `BMET11-Tumor_Seurat_Object`,
+                                      `BMET2-Distal_Seurat_Object`,
+                                      `BMET2-Involved_Seurat_Object`,
+                                      `BMET2-Tumor_Seurat_Object`,
+                                      `BMET3-Distal_Seurat_Object`,
+                                      `BMET3-Involved_Seurat_Object`,
+                                      `BMET3-Tumor_Seurat_Object`,
+                                      `BMET5-Distal_Seurat_Object`,
+                                      `BMET5-Involved_Seurat_Object`,
+                                      `BMET5-Tumor_Seurat_Object`,
+                                      `BMET6-Distal_Seurat_Object`,
+                                      `BMET6-Involved_Seurat_Object`,
+                                      `BMET6-Tumor_Seurat_Object`,
+                                      `BMET7-Distal_Seurat_Object`,
+                                      `BMET7-Tumor_Seurat_Object`,
+                                      `BMET8-Distal_Seurat_Object`,
+                                      `BMET8-Involved_Seurat_Object`,
+                                      `BMET8-Tumor_Seurat_Object`,
+                                      `BMM2-Benign_Seurat_Object`,
+                                      `BMM3-Benign_Seurat_Object`,
+                                      `BMM4-Benign_Seurat_Object`,
+                                      `BMM5-Benign_Seurat_Object`,
+                                      `BMM6-Benign_Seurat_Object`,
+                                      `BMM8-Benign_Seurat_Object`,
+                                      `BMM9-Benign_Seurat_Object`,
+                                      Lung.Met1_Seurat_Object,
+                                      Lung.Met2_Seurat_Object,
+                                      Melanoma.Met1_Seurat_Object))
+
+rm(list =c("BMET1-Tumor_Seurat_Object",
+           "BMET10-Involved_Seurat_Object",
+            "BMET10-Tumor_Seurat_Object",
+            "BMET11-Distal_Seurat_Object",
+             "BMET11-Involved_Seurat_Object",
+                                      "BMET11-Tumor_Seurat_Object",
+                                      "BMET2-Distal_Seurat_Object",
+                                      "BMET2-Involved_Seurat_Object",
+                                      "BMET2-Tumor_Seurat_Object",
+                                      "BMET3-Distal_Seurat_Object",
+                                      "BMET3-Involved_Seurat_Object",
+                                      "BMET3-Tumor_Seurat_Object",
+                                      "BMET5-Distal_Seurat_Object",
+                                      "BMET5-Involved_Seurat_Object",
+                                      "BMET5-Tumor_Seurat_Object",
+                                      "BMET6-Distal_Seurat_Object",
+                                      "BMET6-Involved_Seurat_Object",
+                                      "BMET6-Tumor_Seurat_Object",
+                                      "BMET7-Distal_Seurat_Object",
+                                      "BMET7-Tumor_Seurat_Object",
+                                      "BMET8-Distal_Seurat_Object",
+                                      "BMET8-Involved_Seurat_Object",
+                                      "BMET8-Tumor_Seurat_Object",
+                                      "BMM2-Benign_Seurat_Object",
+                                      "BMM3-Benign_Seurat_Object",
+                                      "BMM4-Benign_Seurat_Object",
+                                      "BMM5-Benign_Seurat_Object",
+                                      "BMM6-Benign_Seurat_Object",
+                                      "BMM8-Benign_Seurat_Object",
+                                      "BMM9-Benign_Seurat_Object",
+                                      "Lung.Met1_Seurat_Object",
+                                      "Lung.Met2_Seurat_Object",
+                                      "Melanoma.Met1_Seurat_Object"))
+
+
+
+
+```
+
+

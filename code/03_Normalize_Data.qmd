@@ -1,0 +1,56 @@
+---
+title: "Normalization"
+format: html
+---
+
+# Normalization
+```{r}
+
+#SCTransform
+GSE143791_Seurat_Object = Seurat::SCTransform(GSE143791_Seurat_Object)
+
+
+```
+
+
+# Dimension Reduction
+```{r}
+
+#PCA
+GSE143791_Seurat_Object = Seurat::RunPCA(GSE143791_Seurat_Object)
+
+#PCA Plots
+Seurat::ElbowPlot(GSE143791_Seurat_Object, ndims = 50)
+Seurat::DimPlot(GSE143791_Seurat_Object, reduction = "pca", group.by = "Patient_ID")
+Seurat::VizDimLoadings(GSE143791_Seurat_Object, dims = 1:6, reduction = "pca")
+Seurat::DimHeatmap(GSE143791_Seurat_Object, dims = 1:6, cells = 500, balanced = TRUE)
+
+#set the number of PCA dimensions to use
+dims_to_use = 1:30
+
+#UMAP
+GSE143791_Seurat_Object = Seurat::RunUMAP(GSE143791_Seurat_Object, dims = dims_to_use)
+
+```
+
+
+# Clustering
+```{r}
+
+GSE143791_Seurat_Object = Seurat::FindNeighbors(GSE143791_Seurat_Object, dims = dims_to_use)
+GSE143791_Seurat_Object = Seurat::FindClusters(GSE143791_Seurat_Object, resolution = 0.5)
+
+rm(dims_to_use)
+
+```
+
+# Plots
+```{r}
+
+Seurat::DimPlot(GSE143791_Seurat_Object, label = TRUE) + NoLegend()
+Seurat::DimPlot(GSE143791_Seurat_Object, group.by = "Patient_ID")
+Seurat::DimPlot(GSE143791_Seurat_Object, group.by = "Malignancy")
+Seurat::DimPlot(GSE143791_Seurat_Object, group.by = "Location")
+
+
+```

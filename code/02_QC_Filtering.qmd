@@ -1,0 +1,31 @@
+---
+title: "QC Filtering"
+format: html
+---
+
+
+```{r}
+
+#Find mitochondrial gene naming
+grep("MT", rownames(GSE143791_Seurat_Object), value = TRUE)
+
+#Get percentages of mitochondrial reads
+GSE143791_Seurat_Object$percent_mt = Seurat::PercentageFeatureSet(GSE143791_Seurat_Object, pattern = "^MT.")
+
+#Plots
+Seurat::VlnPlot(GSE143791_Seurat_Object, features = c("nCount_RNA", "nFeature_RNA", "percent_mt"))
+
+#Filter out high mitochondrial reads
+print(paste0(dim(GSE143791_Seurat_Object)[2], " cells before filtering high mitochondrial reads."))
+GSE143791_Seurat_Object = subset(GSE143791_Seurat_Object, subset = percent_mt < 20)
+print(paste0(dim(GSE143791_Seurat_Object)[2],  " cells after filtering high mitochondrial reads."))
+
+#Remove cells with low RNA counts and features
+GSE143791_Seurat_Object = subset(GSE143791_Seurat_Object, subset = nCount_RNA > 200 & nFeature_RNA > 200)
+print(paste0(dim(GSE143791_Seurat_Object)[2],  " cells after filtering low RNA count/features."))
+
+#Plots
+Seurat::VlnPlot(GSE143791_Seurat_Object, features = c("nCount_RNA", "nFeature_RNA", "percent_mt"))
+
+
+```

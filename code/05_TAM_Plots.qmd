@@ -1,0 +1,35 @@
+---
+title: "TAM Expression"
+format: html
+---
+
+# schex
+```{r}
+
+GSE143791_Seurat_Object = schex::make_hexbin(GSE143791_Seurat_Object, nbins = 100)
+
+```
+
+# TAM Plots
+
+## Seurat Plots
+```{r}
+
+TAM_Genes = c("AXL", "TYRO3", "MERTK", "GAS6", "PROS1", "CSF1R", "FLT3")
+
+lapply(TAM_Genes, Seurat::FeaturePlot, object = GSE143791_Seurat_Object, split.by = "Location")
+
+```
+
+## schex Plots
+```{r}
+
+for(gene in TAM_Genes){
+  print(schex::plot_hexbin_gene(GSE143791_Seurat_Object, type = "SCT", gene = gene, action = "prop_0", title = gene))
+}
+
+rm(TAM_Genes)
+rm(gene)
+
+```
+

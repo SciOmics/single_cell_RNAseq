@@ -1,0 +1,89 @@
+---
+title: "Cluster Labeling"
+format: html
+---
+
+# Define lineage marker sets
+```{r}
+
+Lineage_Markers = list(Tcells = c("PTPRC", "CD3E", "CD8A",  "CD4", "FOXP3"),
+                       Bcells = c("PTPRC", "CD19", "MS4A1", "HLA-DRB1", "MZB1"),
+                       gdTcells = c("PTPRC", "S100B", "TUBB", "TRGJP2"),
+                       NKcells = c("PTPRC", "CD3E", "NCAM1", "FCGR3A", "NKG7", "TRDC"),
+                       Dendritic = c("PTPRC", "ITGAX", "ZBTB46", "LAMP3"),
+                       Basophils = c("PTPRC", "NPL", "WRN", "NFIL3"),
+                       Eosinophils = c("PTPRC", "CSF2", "EPX", "SIGLEC8"),
+                       Macrophages = c("PTPRC", "CD68", "NAAA", "JAML"),
+                       Mast_cells = c("PTPRC", "SLC29A1", "KIT", "LTC4S"),
+                       Monocytes = c("PTPRC", "APOBEC3A", "LYZ", "CD14"),
+                       Neutrophils = c("PTPRC", "CSF3R", "FCGR3A", "TREM1"),
+                       Epithelial = c("KRT14", "EPCAM"),
+                       Endothelial = c("VWF", "EGFL7", "EMCN", "PECAM1"),
+                       Fibroblasts =c("COL1A1", "COL1A2", "COL5A1", "LOXL1", "LUM", "FBLN1", "FBLN2", "CD34", "PDGFRA"),
+                       CAFs = c("FAP", "ACTA2", "MFAP5", "COL11A1", "TNC"))
+
+```
+
+# Lineage Marker Plots
+```{r}
+
+lapply(Lineage_Markers, Seurat::FeaturePlot, object = GSE143791_Seurat_Object)
+
+```
+
+# Prostate Genes
+```{r}
+
+Prostate_Genes = c("KLK3", "PSCA", "TMPRSS2", "PCA3", "HOXB13", "KLK4", "KLK2", "SLC45A3", "MSMB")
+
+lapply(Prostate_Genes, Seurat::FeaturePlot, object = GSE143791_Seurat_Object)
+
+```
+
+# Cluster DEGs
+```{r}
+
+Cluster_DEGs = list()
+
+Cluster_DEGs$C12 = Seurat::FindMarkers(GSE143791_Seurat_Object, ident.1 = 12)
+#Not working
+
+```
+
+
+# Label Clusters
+```{r}
+
+GSE143791_Seurat_Object = Seurat::AddMetaData(GSE143791_Seurat_Object,
+                                              case_when(GSE143791_Seurat_Object$seurat_clusters == "0" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "1" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "2" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "3" ~ "Innate_Immune",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "4" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "5" ~ "Bcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "6" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "7" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "8" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "9" ~ "Bcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "10" ~ "Innate_Immune",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "11" ~ "Unknown",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "12" ~ "Unknown",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "13" ~ "Innate_Immune",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "14" ~ "Innate_Immune",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "15" ~ "Unknown",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "16" ~ "Tcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "17" ~ "Innate_Immune",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "18" ~ "Innate_Immune",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "19" ~ "Unknown",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "20" ~ "Unknown",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "21" ~ "Tumor",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "22" ~ "Unknown",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "23" ~ "Bcells",
+                                                        GSE143791_Seurat_Object$seurat_clusters == "24" ~ "Unknown"),
+                                              col.name = "Cell_Type"
+                                              )
+
+DimPlot(GSE143791_Seurat_Object, label = TRUE, group.by = "Cell_Type")
+
+```
+
